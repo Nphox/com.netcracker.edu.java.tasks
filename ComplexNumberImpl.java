@@ -1,19 +1,95 @@
 package com.netcracker.edu.java.tasks;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import static java.lang.Character.isDigit;
-import static java.lang.Double.doubleToLongBits;
 import static java.lang.Double.parseDouble;
-import static java.lang.String.valueOf;
-import static java.lang.System.in;
-import static java.lang.System.setOut;
 import static jdk.nashorn.internal.objects.NativeString.substring;
 
 public class ComplexNumberImpl implements ComplexNumber{
     public static void  main(String... args){
-        testEquals();
+        testCompareTo();
+    }
+
+    public static void testCompareTo(){
+        ComplexNumberImpl a = new ComplexNumberImpl();
+        ComplexNumberImpl b = new ComplexNumberImpl();
+
+        a.set(1, 0);
+        b.set(0, 0);
+        System.out.println("Expectation: 1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(0, 1);
+        b.set(0, 0);
+        System.out.println("Expectation: 1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(0, 0);
+        b.set(0, 1);
+        System.out.println("Expectation: -1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(0, 0);
+        b.set(1, 0);
+        System.out.println("Expectation: -1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(0, 0);
+        b.set(1, 1);
+        System.out.println("Expectation: -1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(1, 1);
+        b.set(0, 0);
+        System.out.println("Expectation: 1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(0, 0);
+        b.set(0, 0);
+        System.out.println("Expectation: 0");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(-2, 2);
+        b.set(2, -2);
+        System.out.println("Expectation: 0");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(2, -2);
+        b.set(-2, 2);
+        System.out.println("Expectation: 0");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(2.35, -2.35);
+        b.set(-2.35, 2.35);
+        System.out.println("Expectation: 0");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(1, 1);
+        b.set(1, 1);
+        System.out.println("Expectation: 0");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(0, 0);
+        b.set(-1, 1);
+        System.out.println("Expectation: -1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
+
+        a.set(1, -1);
+        b.set(0, 0);
+        System.out.println("Expectation: 1");
+        System.out.println("Reality: " + a.compareTo(b));
+        System.out.println();
     }
 
     public static void testEquals(){
@@ -95,8 +171,17 @@ public class ComplexNumberImpl implements ComplexNumber{
         ComplexNumber object = new ComplexNumberImpl();
         object.set(1, 5);
         ComplexNumber objectcopy = object.copy();
+
         System.out.println("Real part: " + objectcopy.getRe());
         System.out.println("Imaginary part: " + objectcopy.getIm());
+        System.out.println();
+
+        System.out.println("Expectation: true");
+        System.out.println("Reality: " + object.copy().equals(object));
+        System.out.println();
+
+        System.out.println("Expectation: true");
+        System.out.println("Reality: " + (object.copy() != object));
     }
 
     public static void testSetString(){
@@ -273,13 +358,19 @@ public class ComplexNumberImpl implements ComplexNumber{
 
     @Override
     public int compareTo(ComplexNumber other) {
-        return 0;
+        if ((re*re + im*im) == (other.getRe()*other.getRe() + other.getIm()*other.getIm())) {
+            return 0;
+        }
+        if ((re*re + im*im) < (other.getRe()*other.getRe() + other.getIm()*other.getIm())) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
     }
 
     @Override
-    public void sort(ComplexNumber[] array) {
-
-    }
+    public void sort(ComplexNumber[] array) {    }
 
     @Override
     public ComplexNumber negate() {
