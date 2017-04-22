@@ -1,12 +1,171 @@
 package com.netcracker.edu.java.tasks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
 import static java.lang.Double.parseDouble;
-import static jdk.nashorn.internal.objects.NativeString.substring;
 
 public class ComplexNumberImpl implements ComplexNumber{
     public static void  main(String... args){
-        testCompareTo();
+        testSetString();
+    }
+
+    public static void testDoubleParser(){
+        String s = "1.05+1.05";
+        double d = parseDouble(s);
+        System.out.println(d);
+    }
+
+    public static void testMultiply(){
+        ComplexNumberImpl obj1 = new ComplexNumberImpl();
+        ComplexNumberImpl obj2 = new ComplexNumberImpl();
+        Random rand = new Random();
+        double a;
+        double b;
+        double c;
+        double d;
+
+        boolean error = false;
+        int count = 10;
+        for(int i = 0; i < count; i++){
+            a = rand.nextDouble();
+            b = rand.nextDouble();
+            c = rand.nextDouble();
+            d = rand.nextDouble();
+
+            if (a > 0.5){
+                a *= -1;
+            }
+            if (b > 0.5){
+                b *= -1;
+            }
+            if (c > 0.5){
+                c *= -1;
+            }
+            if (d > 0.5){
+                d *= -1;
+            }
+
+            System.out.println("a: " + a);
+            System.out.println("b: " + b);
+            System.out.println("c: " + c);
+            System.out.println("d: " + d);
+            System.out.println();
+
+            obj1.set(a, b);
+            obj2.set(c, d);
+            ComplexNumber obj3 = obj1.multiply(obj2);
+
+            if((obj3.getRe() != a*c+b*d) || (obj3.getIm() != b*c+a*d)){
+                System.out.println("TEST IS FAILED! Index:" + i);
+                error = true;
+            }
+        }
+
+        if (!error){
+            System.out.println("Test passed successfully.");
+        }
+    }
+
+    public static void testAdd() {
+        ComplexNumberImpl obj1 = new ComplexNumberImpl();
+        ComplexNumberImpl obj2 = new ComplexNumberImpl();
+        Random rand = new Random();
+        double a;
+        double b;
+        double c;
+        double d;
+
+        boolean error = false;
+        int count = 10;
+        for(int i = 0; i < count; i++){
+            a = rand.nextDouble();
+            b = rand.nextDouble();
+            c = rand.nextDouble();
+            d = rand.nextDouble();
+
+            if (a > 0.5){
+                a *= -1;
+            }
+            if (b > 0.5){
+                b *= -1;
+            }
+            if (c > 0.5){
+                c *= -1;
+            }
+            if (d > 0.5){
+                d *= -1;
+            }
+
+            System.out.println("a: " + a);
+            System.out.println("b: " + b);
+            System.out.println("c: " + c);
+            System.out.println("d: " + d);
+            System.out.println();
+
+            obj1.set(a, b);
+            obj2.set(c, d);
+            obj1.add(obj2);
+
+            if((obj1.getRe() != a+c) || (obj1.getIm() != b+d)){
+                System.out.println("TEST IS FAILED! Index:" + i);
+                error = true;
+            }
+        }
+
+        if (!error){
+            System.out.println("Test passed successfully.");
+        }
+    }
+
+    public static void testNegate(){
+        ComplexNumberImpl a = new ComplexNumberImpl();
+        a.set(0.3, -5);
+        ComplexNumber b = a.negate();
+        System.out.println(b.toString());
+    }
+
+    public static void testSort(){
+        int sizeArray = 5;
+        ComplexNumberImpl[] array = new ComplexNumberImpl[sizeArray];
+        ComplexNumberImpl worker = new ComplexNumberImpl();
+        Random generator = new Random();
+
+        for(int i = 0; i < array.length; i++){
+            array[i] = new ComplexNumberImpl();
+            int sign = 1;
+            if (i % 2 == 0){
+                sign *= -1;
+            }
+            array[i].set(generator.nextInt(10), sign*generator.nextInt(10));
+        }
+        System.out.println();
+
+        System.out.println("Source array:");
+        for (int i = 0; i < array.length; i++){
+            System.out.println(array[i].toString());
+        }
+        System.out.println();
+
+        worker.sort(array);
+
+        System.out.println("Sorted array:");
+        for (int i = 0; i < array.length; i++){
+            System.out.println(array[i].toString());
+        }
+        System.out.println();
+
+        boolean error = false;
+        for (int i = 1; i < array.length; i++){
+            if(array[i].compareTo(array[i-1]) < 0){
+                System.out.println("TEST IS FAILED! Index:" + i);
+                error = true;
+            }
+        }
+        if (!error){
+            System.out.println("Test passed successfully.");
+        }
     }
 
     public static void testCompareTo(){
@@ -153,7 +312,6 @@ public class ComplexNumberImpl implements ComplexNumber{
 
     public static void testToString(){
         ComplexNumberImpl obj = new ComplexNumberImpl();
-        String[] b = {"-5+2i", "+0+2i", "1+i", "+4-2i", "i", "-3i", "3", "-0", "-0-i", "+0+i", "-0-0i", "+0+0i"};
         double[][] arr = {{-5, 2}, {0, 2}, {1, 1}, {4, -2}, {0, 1}, {0, -3}, {3, 0}, {0, 0}, {0, -1}};
         for (int i = 0; i < arr.length; i++){
             obj.set(arr[i][0], arr[i][1]);
@@ -167,7 +325,6 @@ public class ComplexNumberImpl implements ComplexNumber{
     }
 
     public static void testCopy(){
-        //<code>x.copy().equals(x)</code> but <code>x.copy()!=x</code>.
         ComplexNumber object = new ComplexNumberImpl();
         object.set(1, 5);
         ComplexNumber objectcopy = object.copy();
@@ -185,8 +342,7 @@ public class ComplexNumberImpl implements ComplexNumber{
     }
 
     public static void testSetString(){
-        //Correct examples: "-5+2i", "1+i", "+4-i", "i", "-3i", "3".
-        String[] b = {"-5+2i", "+0+2i", "1+i", "+4-i", "i", "-3i", "3", "-0", "-0-i", "+0+i", "-0-0i", "+0+0i"};
+        String[] b = {"-5+2i", "+0+2i", "1+i", "+4-i", "i", "-3i", "3", "-0", "-0-i", "+0+i", "-0-0i", "+0+0i", "1.05+1.05"};
         ComplexNumberImpl obj = new ComplexNumberImpl();
         for (String s : b){
             obj.set(s);
@@ -253,11 +409,11 @@ public class ComplexNumberImpl implements ComplexNumber{
                 im = -1;
                 return;
             } else {
-                re = parseDouble(substring(value, 0, lastSignPos));
+                re = parseDouble(value.substring(0, lastSignPos));
                 if (re == -0.0){
-                    re = 0;
                 }
                 if (array[lastSignPos] == '-'){
+                    re = 0;
                     im = -1;
                     return;
                 }else if (array[lastSignPos] == '+') {
@@ -285,14 +441,14 @@ public class ComplexNumberImpl implements ComplexNumber{
             re = 0;
             if (lastSignPos == 0) {
                 re = 0;
-                im = parseDouble(substring(value, lastSignPos, value.length() - 1));
+                im = parseDouble(value.substring(lastSignPos, value.length() - 1));
                 if (im == -0.0){
                     im = 0;
                 }
                 return;
             } else {
                 re = 0;
-                im = parseDouble(substring(value, 0, value.length() - 1));
+                im = parseDouble(value.substring(0, value.length() - 1));
                 if (im == -0.0){
                     im = 0;
                 }
@@ -300,9 +456,14 @@ public class ComplexNumberImpl implements ComplexNumber{
             }
         }
 
+        //duct tape
+        if ((lastSignPos > 0) && (iPosition == -1)){
+            double temp = parseDouble(value);
+        }
+
         //"-5+2i"
-        re = parseDouble(substring(value, 0, lastSignPos));
-        im = parseDouble(substring(value, lastSignPos, value.length() - 1));
+        re = parseDouble(value.substring(0, lastSignPos));
+        im = parseDouble(value.substring(lastSignPos, value.length() - 1));
 
         if (re == -0.0){
             re = 0;
@@ -339,10 +500,7 @@ public class ComplexNumberImpl implements ComplexNumber{
             }
         }
         if (im != 0) {
-            if (!(im == -1 || im == 1)) {
-                builder.append(im);
-            }
-            builder.append("i");
+            builder.append(im + "i");
         }
         return builder.toString();
     }
@@ -370,20 +528,29 @@ public class ComplexNumberImpl implements ComplexNumber{
     }
 
     @Override
-    public void sort(ComplexNumber[] array) {    }
+    public void sort(ComplexNumber[] array) {
+        Arrays.sort(array);
+    }
 
     @Override
     public ComplexNumber negate() {
-        return null;
+        re *= -1;
+        im *= -1;
+        return this;
     }
 
     @Override
     public ComplexNumber add(ComplexNumber arg2) {
-        return null;
+        re += arg2.getRe();
+        im += arg2.getIm();
+        return this;
     }
 
     @Override
     public ComplexNumber multiply(ComplexNumber arg2) {
-        return null;
+        double buf = re*arg2.getRe() + im*arg2.getIm();
+        im = im*arg2.getRe() + re*arg2.getIm();
+        re = buf;
+        return this;
     }
 }

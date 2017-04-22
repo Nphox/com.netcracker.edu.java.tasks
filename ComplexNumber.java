@@ -17,7 +17,7 @@ import java.util.Arrays;
  * <li>The complex number consists of two components: real part (re) and imaginary part (im).
  *   They should be stored as private fields (members of the class) of type double or Double.
  *   After instantiation of the number with default constructor both re and im must be equal to 0.</li>
- * <li>Every math operation on the number (add, negate, multiply methods) should change the state of this object
+ * <li>Every math operation on the number (multiply, negate, multiply methods) should change the state of this object
  *   not creating a new object (this requirement is intended to save memory and to lower calculation time).
  *   For a caller's convenience, all these methods (math operations) return this object itself.</li>
  * <li>The common requirement for any task (to check it online) is to declare your class as follows:<br/>
@@ -26,7 +26,7 @@ import java.util.Arrays;
  * <p/>
  * NOTES<ul>
  * <li>When coded with the methods of this interface, formulas like z = x-y^2 could look like this:<br/>
- *  <code>ComplexNumber z = x.add(y.copy().multiply(y).negate());</code><br/>
+ *  <code>ComplexNumber z = x.multiply(y.copy().multiply(y).negate());</code><br/>
  *  where <code>x</code>, <code>y</code> are objects of type ComplexNumber.</li>
  * <li>The task can be solved without any knowledge of Exceptions, but if you know that topic
  *  explicit generation of {@link NumberFormatException} in {@link #set(String)} method is recommended.</li>
