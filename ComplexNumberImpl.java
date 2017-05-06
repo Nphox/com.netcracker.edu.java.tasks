@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import static java.lang.Double.parseDouble;
-
 public class ComplexNumberImpl implements ComplexNumber{
     public static void  main(String... args){
-        testSetString();
+        testMultiplyNegate();
     }
 
-    public static void testDoubleParser(){
-        String s = "1.05+1.05";
-        double d = parseDouble(s);
-        System.out.println(d);
+    public static void testMultiplyNegate(){
+        ComplexNumberImpl a = new ComplexNumberImpl();
+        ComplexNumberImpl b = new ComplexNumberImpl();
+        ComplexNumberImpl c = new ComplexNumberImpl();
+
+        a.set(8, 4);
+        b.set(4, -6);
+        c.set(8, 4);
+        a.multiply(b).add(c.negate());
+
+        System.out.println(a.toString());
     }
 
     public static void testMultiply(){
@@ -57,7 +62,7 @@ public class ComplexNumberImpl implements ComplexNumber{
             obj2.set(c, d);
             ComplexNumber obj3 = obj1.multiply(obj2);
 
-            if((obj3.getRe() != a*c+b*d) || (obj3.getIm() != b*c+a*d)){
+            if((obj3.getRe() != a*c-b*d) || (obj3.getIm() != b*c+a*d)){
                 System.out.println("TEST IS FAILED! Index:" + i);
                 error = true;
             }
@@ -342,7 +347,7 @@ public class ComplexNumberImpl implements ComplexNumber{
     }
 
     public static void testSetString(){
-        String[] b = {"-5+2i", "+0+2i", "1+i", "+4-i", "i", "-3i", "3", "-0", "-0-i", "+0+i", "-0-0i", "+0+0i", "1.05+1.05"};
+        String[] b = {"-5+2i", "+0+2i", "1+i", "+4-i", "i", "-3i", "3", "-0", "-0-i", "+0+i", "-0-0i", "+0+0i"};
         ComplexNumberImpl obj = new ComplexNumberImpl();
         for (String s : b){
             obj.set(s);
@@ -382,95 +387,54 @@ public class ComplexNumberImpl implements ComplexNumber{
 
     @Override
     public void set(String value) throws NumberFormatException {
-        char[] array = value.toCharArray();
-        int lastSignPos = -1;
-        int iPosition = -1;
+        String tempRe = "0";
+        String tempIm = "0";
 
-        //i
-        if ((array.length == 1) && (array[0] == 'i')){
-            re = 0;
-            im = 1;
-            return;
+        if (value.isEmpty()) {
+            throw new NumberFormatException();
         }
 
-        for(int i = 0; i < array.length; i++){
-            if (((array[i] == '+') || (array[i] == '-'))){
-                lastSignPos = i;
+        int lastIndexPlus = value.lastIndexOf('+');
+        int lastIndexMinus = value.lastIndexOf('-');
+        int lastSignIndex = Math.max(lastIndexPlus, lastIndexMinus);
+
+        if (value.indexOf('i') < 0) {
+            if (lastSignIndex > 0) {
+                throw new NumberFormatException();
             }
-            if (array[i] == 'i'){
-                iPosition = i;
+            else {
+                tempRe = value;
             }
         }
-
-        //-i, +4-i, 1+i
-        if(iPosition == (lastSignPos+1)){
-            if (lastSignPos == 0){
-                re = 0;
-                im = -1;
-                return;
-            } else {
-                re = parseDouble(value.substring(0, lastSignPos));
-                if (re == -0.0){
-                }
-                if (array[lastSignPos] == '-'){
-                    re = 0;
-                    im = -1;
-                    return;
-                }else if (array[lastSignPos] == '+') {
-                    im = 1;
-                    return;
-                } else {
-                    System.out.println("Invalid expression!");
-                    return;
-                }
+        else {
+            if (value.compareTo("i") == 0) {
+                tempIm = "1";
+            }
+            else if (lastSignIndex > 0) {
+                tempRe = value.substring(0, lastSignIndex);
+                tempIm = value.substring(lastSignIndex, value.length() - 1);
+            }
+            else {
+                tempIm = value.substring(0, value.length() - 1);
             }
         }
 
-        //"3"
-        if (((lastSignPos == -1) || (lastSignPos == 0)) && (iPosition == -1) && (array.length > 0)){
-            re = parseDouble(value);
-            if (re == -0.0){
-                re = 0;
-            }
-            im = 0;
-            return;
+        if (tempRe.compareTo("+") == 0) {
+            tempRe = "1";
+        }
+        else if (tempRe.compareTo("-") == 0) {
+            tempRe = "-1";
         }
 
-        //"-3i"
-        if (((lastSignPos == 0) || (lastSignPos == -1)) && (iPosition == (array.length-1))){
-            re = 0;
-            if (lastSignPos == 0) {
-                re = 0;
-                im = parseDouble(value.substring(lastSignPos, value.length() - 1));
-                if (im == -0.0){
-                    im = 0;
-                }
-                return;
-            } else {
-                re = 0;
-                im = parseDouble(value.substring(0, value.length() - 1));
-                if (im == -0.0){
-                    im = 0;
-                }
-                return;
-            }
+        if (tempIm.compareTo("+") == 0) {
+            tempIm = "1";
+        }
+        else if (tempIm.compareTo("-") == 0) {
+            tempIm = "-1";
         }
 
-        //duct tape
-        if ((lastSignPos > 0) && (iPosition == -1)){
-            double temp = parseDouble(value);
-        }
-
-        //"-5+2i"
-        re = parseDouble(value.substring(0, lastSignPos));
-        im = parseDouble(value.substring(lastSignPos, value.length() - 1));
-
-        if (re == -0.0){
-            re = 0;
-        }
-        if (im == -0.0){
-            im = 0;
-        }
+        this.re = Double.parseDouble(tempRe);
+        this.im = Double.parseDouble(tempIm);
     }
 
     @Override
@@ -548,7 +512,7 @@ public class ComplexNumberImpl implements ComplexNumber{
 
     @Override
     public ComplexNumber multiply(ComplexNumber arg2) {
-        double buf = re*arg2.getRe() + im*arg2.getIm();
+        double buf = re*arg2.getRe() - im*arg2.getIm();
         im = im*arg2.getRe() + re*arg2.getIm();
         re = buf;
         return this;
