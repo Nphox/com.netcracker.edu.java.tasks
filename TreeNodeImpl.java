@@ -114,26 +114,22 @@ public class TreeNodeImpl implements TreeNode {
 
     @Override
     public TreeNode findChild(Object data) {
-        for (TreeNode node : childSet){
-
-            if (data == null) {
-                if (node.getData() == null){
+        for (TreeNode node : childSet) {
+            if (node.getData() != null) {
+                if (node.getData().equals(data)) {
                     return node;
                 }
             }
-
-            else if (node.getData().equals(data)){
+            else if (data == null) {
                 return node;
             }
-
             else {
                 TreeNode temp = node.findChild(data);
-                if (temp != null){
+                if (temp != null) {
                     return temp;
                 }
             }
         }
-
         return null;
     }
 }
